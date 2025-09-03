@@ -68,7 +68,7 @@ class MaintenanceTaskController extends Controller
     public function create()
     {
         $servers = Server::all();
-        $users = User::where('role', 'technician')->orWhere('role', 'admin')->get();
+        $users = User::all();
         
         return view('maintenance-tasks.create', compact('servers', 'users'));
     }

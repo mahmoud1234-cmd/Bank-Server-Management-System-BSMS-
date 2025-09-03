@@ -68,7 +68,7 @@ class IncidentController extends Controller
     public function create()
     {
         $servers = Server::all();
-        $users = User::where('role', 'technician')->orWhere('role', 'admin')->get();
+        $users = User::all(); // Récupérer tous les utilisateurs
         
         return view('incidents.create', compact('servers', 'users'));
     }
@@ -87,7 +87,7 @@ class IncidentController extends Controller
             'assigned_to' => 'nullable|exists:users,id',
             'category' => 'required|string|max:100',
             'priority' => 'required|in:low,medium,high,urgent',
-            'impact_level' => 'required|in:low,medium,high,critical',
+            'impact_level' => 'required|in:minimal,minor,major,critical',
             'affected_services' => 'nullable|array',
             'root_cause' => 'nullable|string|max:500',
             'prevention_measures' => 'nullable|string|max:500',
@@ -166,7 +166,7 @@ class IncidentController extends Controller
             'assigned_to' => 'nullable|exists:users,id',
             'category' => 'required|string|max:100',
             'priority' => 'required|in:low,medium,high,urgent',
-            'impact_level' => 'required|in:low,medium,high,critical',
+            'impact_level' => 'required|in:minimal,minor,major,critical',
             'affected_services' => 'nullable|array',
             'root_cause' => 'nullable|string|max:500',
             'prevention_measures' => 'nullable|string|max:500',

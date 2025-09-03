@@ -9,37 +9,36 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Afficher le formulaire d'inscription
-    public function showSignupForm()
+    // Afficher le formulaire d'inscription (Blade)
+    public function showRegisterForm()
     {
-        return view('auth.signup');
+        return view('auth.register'); // resources/views/auth/register.blade.php
     }
 
     // Traiter l'inscription
-    public function signup(Request $request)
+    public function register(Request $request)
     {
-        // Validation des champs
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
-        // Création de l'utilisateur
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        // Redirection vers la page de connexion avec message
-        return redirect()->route('signin.form')->with('success', 'Compte créé avec succès !');
+        return redirect()->route('login')->with('status', 'Compte créé avec succès !');
     }
 
-    // Afficher le formulaire de connexion
+    // Afficher le formulaire de connexion (Blade)
     public function showSigninForm()
     {
-        return view('auth.signin');
+        return view('auth.login', [
+            'status' => session('status'),
+        ]);
     }
 
     // Traiter la connexion
@@ -63,6 +62,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/signin');
+        return redirect()->route('login');
     }
 }

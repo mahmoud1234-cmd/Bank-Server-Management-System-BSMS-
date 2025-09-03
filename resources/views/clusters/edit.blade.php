@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            🔗 Créer un Cluster de Serveurs
+            🔗 Modifier le Cluster: {{ $cluster->name }}
         </h2>
     </x-slot>
 
@@ -19,8 +19,9 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('clusters.store') }}" method="POST" class="space-y-6">
+                    <form action="{{ route('clusters.update', $cluster) }}" method="POST" class="space-y-6">
                         @csrf
+                        @method('PUT')
                         
                         <!-- Nom du cluster -->
                         <div>
@@ -30,9 +31,8 @@
                             <input type="text" 
                                    id="name" 
                                    name="name" 
-                                   value="{{ old('name') }}"
+                                   value="{{ old('name', $cluster->name) }}"
                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" 
-                                   placeholder="Ex: Cluster-Production-DB"
                                    required>
                         </div>
 
@@ -45,18 +45,13 @@
                                     name="mode" 
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" 
                                     required>
-                                <option value="">Sélectionner un mode</option>
-                                <option value="actif_actif" {{ old('mode') == 'actif_actif' ? 'selected' : '' }}>
+                                <option value="actif_actif" {{ old('mode', $cluster->mode) == 'actif_actif' ? 'selected' : '' }}>
                                     Actif / Actif (Load Balancing)
                                 </option>
-                                <option value="actif_passif" {{ old('mode') == 'actif_passif' ? 'selected' : '' }}>
+                                <option value="actif_passif" {{ old('mode', $cluster->mode) == 'actif_passif' ? 'selected' : '' }}>
                                     Actif / Passif (Failover)
                                 </option>
                             </select>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                <strong>Actif/Actif:</strong> Tous les serveurs traitent les requêtes simultanément<br>
-                                <strong>Actif/Passif:</strong> Un serveur principal, les autres en standby
-                            </p>
                         </div>
 
                         <!-- Sélection des serveurs -->
@@ -65,16 +60,20 @@
                                 Serveurs du Cluster <span class="text-red-500">*</span>
                             </label>
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                                ⚠️ <strong>Nombre pair obligatoire</strong> - Sélectionnez un nombre pair de serveurs (2, 4, 6, etc.)
+                                ⚠️ <strong>Nombre pair obligatoire</strong> - Sélectionnez un nombre pair de serveurs
                             </p>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-64 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-md p-4">
+                                @php
+                                    $selectedServerIds = old('server_ids', $cluster->servers->pluck('id')->toArray());
+                                @endphp
+                                
                                 @forelse($availableServers as $server)
                                     <label class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
                                         <input type="checkbox" 
                                                name="server_ids[]" 
                                                value="{{ $server->id }}"
-                                               {{ in_array($server->id, old('server_ids', [])) ? 'checked' : '' }}
+                                               {{ in_array($server->id, $selectedServerIds) ? 'checked' : '' }}
                                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                         <div class="flex-1">
                                             <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -91,18 +90,14 @@
                                     </label>
                                 @empty
                                     <div class="col-span-2 text-center py-8 text-gray-500 dark:text-gray-400">
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        <p class="mt-2">Aucun serveur disponible</p>
-                                        <p class="text-sm">Tous les serveurs sont déjà assignés à des clusters</p>
+                                        <p>Aucun serveur disponible</p>
                                     </div>
                                 @endforelse
                             </div>
                             
                             <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                <span id="selected-count">0</span> serveur(s) sélectionné(s)
-                                <span id="pair-warning" class="text-red-500 hidden ml-2">⚠️ Nombre impair sélectionné</span>
+                                <span id="selected-count">{{ count($selectedServerIds) }}</span> serveur(s) sélectionné(s)
+                                <span id="pair-warning" class="text-red-500 {{ count($selectedServerIds) % 2 !== 0 ? '' : 'hidden' }} ml-2">⚠️ Nombre impair sélectionné</span>
                             </div>
                         </div>
 
@@ -115,7 +110,7 @@
                             <button type="submit" 
                                     class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     id="submit-btn">
-                                🔗 Créer le Cluster
+                                💾 Mettre à jour le Cluster
                             </button>
                         </div>
                     </form>

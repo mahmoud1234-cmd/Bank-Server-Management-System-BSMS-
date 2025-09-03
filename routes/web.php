@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+
 use Illuminate\Foundation\Application;
 
 // Contrôleurs
@@ -10,7 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DatacenterController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ClusteringController;
+use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\MaintenanceTaskController;
@@ -18,18 +18,12 @@ use App\Http\Controllers\MaintenanceTaskController;
 // -----------------------------
 // ROUTES PUBLIQUES
 // -----------------------------
+// Route d'accueil - redirection vers login ou dashboard
 Route::get('/', function () {
-    return redirect()->route('login.form');
-});
+    return auth()->check() ? redirect('/dashboard') : redirect('/login');
+})->name('home');
 
-// Signup
-Route::get('/signup', [AuthController::class, 'showSignupForm'])->name('signup.form');
-Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
-
-// Login / Logout
-Route::get('/login', [AuthController::class, 'showSigninForm'])->name('login.form');
-Route::post('/login', [AuthController::class, 'signin'])->name('login');
-Route::post('/logout', [AuthController::class, 'signout'])->name('logout');
+// Les routes d'authentification sont gérées par auth.php (Laravel Breeze)
 
 // -----------------------------
 // ROUTES AUTHENTIFIÉES
@@ -58,9 +52,23 @@ Route::middleware('auth')->group(function () {
     // Incidents
     Route::resource('incidents', IncidentController::class);
 
-    // Reports & Clustering
+    // Clusters
+    Route::resource('clusters', ClusterController::class);
+
+    // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/clustering', [ClusteringController::class, 'index'])->name('clustering.index');
+    
+    // Routes de test pour diagnostic
+    Route::get('/test/incident-form', function() {
+        $servers = App\Models\Server::all();
+        $users = App\Models\User::all();
+        return view('incidents.create', compact('servers', 'users'));
+    })->name('test.incident.form');
+    
+    Route::get('/test/cluster-form', function() {
+        $availableServers = App\Models\Server::whereNull('cluster_id')->get();
+        return view('clusters.create', compact('availableServers'));
+    })->name('test.cluster.form');
 });
 
 // Inclut les routes d'auth supplémentaires si présentes

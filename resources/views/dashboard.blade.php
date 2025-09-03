@@ -59,7 +59,7 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Serveurs Actifs</p>
                                 <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ $stats['active_servers'] }}</p>
-                                <p class="text-sm text-green-600 mt-1">{{ round(($stats['active_servers'] / $stats['total_servers']) * 100, 1) }}% opérationnels</p>
+                                <p class="text-sm text-green-600 mt-1">{{ $stats['total_servers'] > 0 ? round(($stats['active_servers'] / $stats['total_servers']) * 100, 1) : 0 }}% opérationnels</p>
                             </div>
                             <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
                                 <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,6 +88,25 @@
                     </div>
                 </div>
 
+                <!-- Serveurs en maintenance -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-yellow-500">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Serveurs en Maintenance</p>
+                                <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ $stats['maintenance_servers'] }}</p>
+                                <p class="text-sm text-yellow-600 mt-1">{{ $stats['servers_maintenance_percentage'] }}% en maintenance</p>
+                            </div>
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-full">
+                                <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Incidents ouverts -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500">
                     <div class="p-6">
@@ -100,6 +119,24 @@
                             <div class="bg-orange-100 dark:bg-orange-900 p-3 rounded-full">
                                 <svg class="w-8 h-8 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clusters actifs -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-purple-500">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Clusters Actifs</p>
+                                <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ $stats['active_clusters'] }}</p>
+                                <p class="text-sm text-purple-600 mt-1">{{ $stats['total_clusters'] }} clusters total</p>
+                            </div>
+                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
+                                <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                 </svg>
                             </div>
                         </div>
@@ -130,7 +167,7 @@
                                 <div class="flex items-center">
                                     <div class="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-3 mr-3">
                                         <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
-                                             style="width: {{ ($count / $stats['total_servers']) * 100 }}%"></div>
+                                             style="width: {{ $stats['total_servers'] > 0 ? ($count / $stats['total_servers']) * 100 : 0 }}%"></div>
                                     </div>
                                     <span class="text-sm font-bold text-gray-900 dark:text-gray-100 min-w-[2rem] text-right">{{ $count }}</span>
                                 </div>
@@ -161,12 +198,70 @@
                                 <div class="flex items-center">
                                     <div class="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-3 mr-3">
                                         <div class="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500"
-                                             style="width: {{ ($count / $stats['total_servers']) * 100 }}%"></div>
+                                             style="width: {{ $stats['total_servers'] > 0 ? ($count / $stats['total_servers']) * 100 : 0 }}%"></div>
                                     </div>
                                     <span class="text-sm font-bold text-gray-900 dark:text-gray-100 min-w-[2rem] text-right">{{ $count }}</span>
                                 </div>
                             </div>
                             @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clustering des serveurs -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            Clustering des Serveurs
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="text-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                                <div class="text-2xl font-bold text-purple-600">{{ $stats['total_clusters'] }}</div>
+                                <div class="text-xs text-gray-500">Clusters Total</div>
+                            </div>
+                            <div class="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <div class="text-2xl font-bold text-green-600">{{ $stats['active_clusters'] }}</div>
+                                <div class="text-xs text-gray-500">Clusters Actifs</div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            @forelse($clustersByMode as $mode => $count)
+                            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 {{ $mode === 'actif_actif' ? 'bg-blue-500' : 'bg-green-500' }} rounded-full mr-3"></div>
+                                    <span class="font-medium text-gray-700 dark:text-gray-300">
+                                        {{ $mode === 'actif_actif' ? 'Actif / Actif' : 'Actif / Passif' }}
+                                    </span>
+                                </div>
+                                <span class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ $count }}</span>
+                            </div>
+                            @empty
+                            <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+                                <p class="text-sm">Aucun cluster configuré</p>
+                                <a href="{{ route('clusters.create') }}" class="text-purple-600 hover:text-purple-700 text-xs underline">
+                                    Créer le premier cluster
+                                </a>
+                            </div>
+                            @endforelse
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                            <div class="grid grid-cols-2 gap-4 text-center text-sm">
+                                <div>
+                                    <div class="font-semibold text-blue-600">{{ $clusteredServers }}</div>
+                                    <div class="text-xs text-gray-500">En cluster</div>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-600">{{ $standaloneServers }}</div>
+                                    <div class="text-xs text-gray-500">Standalone</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -378,7 +473,7 @@
             </div>
         </div>
     </div>
-    <a href="{{ route('clustering.index') }}"
+    <a href="{{ route('clusters.index') }}"
    class="group relative overflow-hidden bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg p-6 text-white hover:from-purple-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
     <div class="flex items-center">
         <div class="bg-white/20 p-3 rounded-lg mr-4">

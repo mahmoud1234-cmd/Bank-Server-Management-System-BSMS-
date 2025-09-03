@@ -15,7 +15,14 @@ class ServerSeeder extends Seeder
     public function run(): void
     {
         $datacenters = Datacenter::all();
-        $users = User::where('role', 'technician')->get();
+        
+        // Vérifier si des datacenters existent
+        if ($datacenters->isEmpty()) {
+            $this->command->error('Aucun datacenter trouvé. Exécutez DatacenterSeeder d\'abord.');
+            return;
+        }
+        
+        $users = User::all(); // Récupérer tous les utilisateurs au lieu de filtrer par rôle
 
         $servers = [
             // Serveurs critiques - Production
@@ -256,15 +263,40 @@ class ServerSeeder extends Seeder
                 'environment' => 'production',
                 'critical_level' => 'high',
                 'notes' => 'Serveur Exchange pour les emails'
+            ],
+            [
+                'name' => 'SRV-LOAD-BALANCER',
+                'ip_address' => '192.168.1.90',
+                'operating_system' => 'Linux',
+                'role' => 'Infrastructure',
+                'location' => 'Datacenter Principal',
+                'owner' => 'Network Team',
+                'status' => 'Actif',
+                'specifications' => json_encode([
+                    'cpu' => 'Intel Xeon E5-2620 v4',
+                    'ram' => '32 GB',
+                    'storage' => '250 GB SSD',
+                    'network' => '10 Gbps'
+                ]),
+                'datacenter_id' => $datacenters->where('code', 'DC-PRINCIPAL')->first()->id,
+                'environment' => 'production',
+                'critical_level' => 'high',
+                'notes' => 'Load balancer principal'
             ]
         ];
 
         foreach ($servers as $serverData) {
             $server = Server::create($serverData);
             
-            // Assigner des techniciens aléatoirement aux serveurs
-            $randomTechnicians = $users->random(rand(1, 3));
-            $server->assignedUsers()->attach($randomTechnicians->pluck('id')->toArray());
+            // Assigner des utilisateurs aléatoirement aux serveurs si des utilisateurs existent
+            if ($users->isNotEmpty()) {
+                $randomUsers = $users->random(min(rand(1, 3), $users->count()));
+                if (method_exists($server, 'assignedUsers')) {
+                    $server->assignedUsers()->attach($randomUsers->pluck('id')->toArray());
+                }
+            }
         }
+        
+        $this->command->info('Serveurs créés avec succès: ' . count($servers));
     }
 }

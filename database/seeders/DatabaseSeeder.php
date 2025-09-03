@@ -26,10 +26,12 @@ class DatabaseSeeder extends Seeder
         }
         // Exécuter les seeders dans l'ordre
         $this->call([
+            AdminUserSeeder::class,
             DatacenterSeeder::class,
-            UserSeeder::class,
-            RoleSeeder::class,
             ServerSeeder::class,
+            IncidentSeeder::class,
+            MaintenanceTaskSeeder::class,
+            ClusterSeeder::class,
         ]);
 
         // Créer un utilisateur de test par défaut si nécessaire

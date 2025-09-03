@@ -7,6 +7,7 @@ use App\Models\Incident;
 use App\Models\MaintenanceTask;
 use App\Models\Datacenter;
 use App\Models\User;
+use App\Models\Cluster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +29,10 @@ class DashboardController extends Controller
         'today_maintenance' => MaintenanceTask::whereDate('scheduled_at', today())->count(),
         'total_datacenters' => Datacenter::count(),
         'total_users' => User::count(),
+        'total_clusters' => Cluster::count(),
+        'active_clusters' => Cluster::whereHas('servers', function($query) {
+            $query->where('status', 'Actif');
+        })->count(),
     ];
 
     // Calcul des pourcentages avec protection contre zéro
@@ -62,6 +67,15 @@ class DashboardController extends Controller
             ->groupBy('datacenters.id', 'datacenters.name')
             ->pluck('count', 'name')
             ->toArray();
+
+        // Statistiques des clusters
+        $clustersByMode = Cluster::select('mode', DB::raw('count(*) as count'))
+            ->groupBy('mode')
+            ->pluck('count', 'mode')
+            ->toArray();
+
+        $clusteredServers = Server::whereNotNull('cluster_id')->count();
+        $standaloneServers = Server::whereNull('cluster_id')->count();
 
         // Incidents
         $incidentsBySeverity = Incident::select('severity', DB::raw('count(*) as count'))
@@ -149,6 +163,9 @@ class DashboardController extends Controller
             'serversByRole',
             'serversByStatus',
             'serversByDatacenter',
+            'clustersByMode',
+            'clusteredServers',
+            'standaloneServers',
             'incidentsBySeverity',
             'incidentsByCategory',
             'incidentsLast30Days',

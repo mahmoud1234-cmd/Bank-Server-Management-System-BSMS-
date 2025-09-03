@@ -12,24 +12,10 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 </head>
 <body class="font-sans antialiased">
-    <div class="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white dark:bg-gray-800 shadow-md">
-        <div class="p-4 text-lg font-bold text-gray-800 dark:text-gray-200">
-            BSMS
-        </div>
-        <nav class="mt-5">
-            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">📊 Dashboard</a>
-            <a href="{{ route('servers.index') }}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">🖥️ Serveurs</a>
-            <a href="{{ route('incidents.index') }}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">⚠️ Incidents</a>
-            <a href="{{ route('maintenance-tasks.index') }}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">🛠️ Maintenance</a>
-            <a href="{{ route('reports.index') }}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">📑 Rapports</a>
 
-        </nav>
-    </aside>
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         @include('layouts.navigation')
 

@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.0.0",
+        "@inertiajs/progress": "^0.2.7",
         "admin-lte": "^3.2.0",
         "bootstrap": "^4.6.2",
         "jquery": "^3.7.1",
