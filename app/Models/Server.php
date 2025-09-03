@@ -13,6 +13,7 @@ class Server extends Model
     protected $fillable = [
         'name',
         'ip_address',
+        'password',
         'operating_system',
         'role',
         'location',
@@ -35,6 +36,10 @@ class Server extends Model
         'last_maintenance_date' => 'datetime',
         'next_maintenance_date' => 'datetime',
         'specifications' => 'array',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     /**

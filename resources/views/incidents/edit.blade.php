@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            🚨 Créer un Nouvel Incident
+            ✏️ Modifier l'Incident #{{ $incident->id }}
         </h2>
     
 
@@ -19,8 +19,9 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('incidents.store') }}" method="POST" class="space-y-6">
+                    <form action="{{ route('incidents.update', $incident) }}" method="POST" class="space-y-6">
                         @csrf
+                        @method('PUT')
                         
                         <!-- Titre de l'incident -->
                         <div>
@@ -30,7 +31,7 @@
                             <input type="text" 
                                    name="title" 
                                    id="title" 
-                                   value="{{ old('title') }}"
+                                   value="{{ old('title', $incident->title) }}"
                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                    placeholder="Titre court de l'incident..."
                                    required>
@@ -46,7 +47,7 @@
                                       rows="4"
                                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                       placeholder="Décrivez l'incident en détail..."
-                                      required>{{ old('description') }}</textarea>
+                                      required>{{ old('description', $incident->description) }}</textarea>
                         </div>
 
                         <!-- Catégorie -->
@@ -59,13 +60,13 @@
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                     required>
                                 <option value="">-- Sélectionner une catégorie --</option>
-                                <option value="hardware" {{ old('category') == 'hardware' ? 'selected' : '' }}>🖥️ Matériel</option>
-                                <option value="software" {{ old('category') == 'software' ? 'selected' : '' }}>💻 Logiciel</option>
-                                <option value="network" {{ old('category') == 'network' ? 'selected' : '' }}>🌐 Réseau</option>
-                                <option value="security" {{ old('category') == 'security' ? 'selected' : '' }}>🔒 Sécurité</option>
-                                <option value="power" {{ old('category') == 'power' ? 'selected' : '' }}>⚡ Alimentation</option>
-                                <option value="environmental" {{ old('category') == 'environmental' ? 'selected' : '' }}>🌡️ Environnemental</option>
-                                <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>🔧 Autre</option>
+                                <option value="hardware" {{ old('category', $incident->category) == 'hardware' ? 'selected' : '' }}>🖥️ Matériel</option>
+                                <option value="software" {{ old('category', $incident->category) == 'software' ? 'selected' : '' }}>💻 Logiciel</option>
+                                <option value="network" {{ old('category', $incident->category) == 'network' ? 'selected' : '' }}>🌐 Réseau</option>
+                                <option value="security" {{ old('category', $incident->category) == 'security' ? 'selected' : '' }}>🔒 Sécurité</option>
+                                <option value="power" {{ old('category', $incident->category) == 'power' ? 'selected' : '' }}>⚡ Alimentation</option>
+                                <option value="environmental" {{ old('category', $incident->category) == 'environmental' ? 'selected' : '' }}>🌡️ Environnemental</option>
+                                <option value="other" {{ old('category', $incident->category) == 'other' ? 'selected' : '' }}>🔧 Autre</option>
                             </select>
                         </div>
 
@@ -77,7 +78,7 @@
                             <input type="datetime-local" 
                                    name="detected_at" 
                                    id="detected_at" 
-                                   value="{{ old('detected_at', now()->format('Y-m-d\TH:i')) }}"
+                                   value="{{ old('detected_at', $incident->detected_at ? $incident->detected_at->format('Y-m-d\TH:i') : '') }}"
                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                         </div>
 
@@ -91,10 +92,10 @@
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                     required>
                                 <option value="">-- Sélectionner la sévérité --</option>
-                                <option value="low" {{ old('severity') == 'low' ? 'selected' : '' }}>🟢 Faible</option>
-                                <option value="medium" {{ old('severity') == 'medium' ? 'selected' : '' }}>🟡 Moyenne</option>
-                                <option value="high" {{ old('severity') == 'high' ? 'selected' : '' }}>🟠 Élevée</option>
-                                <option value="critical" {{ old('severity') == 'critical' ? 'selected' : '' }}>🔴 Critique</option>
+                                <option value="low" {{ old('severity', $incident->severity) == 'low' ? 'selected' : '' }}>🟢 Faible</option>
+                                <option value="medium" {{ old('severity', $incident->severity) == 'medium' ? 'selected' : '' }}>🟡 Moyenne</option>
+                                <option value="high" {{ old('severity', $incident->severity) == 'high' ? 'selected' : '' }}>🟠 Élevée</option>
+                                <option value="critical" {{ old('severity', $incident->severity) == 'critical' ? 'selected' : '' }}>🔴 Critique</option>
                             </select>
                         </div>
 
@@ -108,10 +109,10 @@
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                     required>
                                 <option value="">-- Sélectionner un statut --</option>
-                                <option value="open" {{ old('status') == 'open' ? 'selected' : '' }}>🔴 Ouvert</option>
-                                <option value="in_progress" {{ old('status') == 'in_progress' ? 'selected' : '' }}>🟡 En cours</option>
-                                <option value="resolved" {{ old('status') == 'resolved' ? 'selected' : '' }}>🟢 Résolu</option>
-                                <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>⚫ Fermé</option>
+                                <option value="open" {{ old('status', $incident->status) == 'open' ? 'selected' : '' }}>🔴 Ouvert</option>
+                                <option value="in_progress" {{ old('status', $incident->status) == 'in_progress' ? 'selected' : '' }}>🟡 En cours</option>
+                                <option value="resolved" {{ old('status', $incident->status) == 'resolved' ? 'selected' : '' }}>🟢 Résolu</option>
+                                <option value="closed" {{ old('status', $incident->status) == 'closed' ? 'selected' : '' }}>⚫ Fermé</option>
                             </select>
                         </div>
 
@@ -125,10 +126,10 @@
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                     required>
                                 <option value="">-- Sélectionner la priorité --</option>
-                                <option value="low" {{ old('priority') == 'low' ? 'selected' : '' }}>⬇️ Faible</option>
-                                <option value="medium" {{ old('priority') == 'medium' ? 'selected' : '' }}>➡️ Moyenne</option>
-                                <option value="high" {{ old('priority') == 'high' ? 'selected' : '' }}>⬆️ Élevée</option>
-                                <option value="urgent" {{ old('priority') == 'urgent' ? 'selected' : '' }}>🚨 Urgente</option>
+                                <option value="low" {{ old('priority', $incident->priority) == 'low' ? 'selected' : '' }}>⬇️ Faible</option>
+                                <option value="medium" {{ old('priority', $incident->priority) == 'medium' ? 'selected' : '' }}>➡️ Moyenne</option>
+                                <option value="high" {{ old('priority', $incident->priority) == 'high' ? 'selected' : '' }}>⬆️ Élevée</option>
+                                <option value="urgent" {{ old('priority', $incident->priority) == 'urgent' ? 'selected' : '' }}>🚨 Urgente</option>
                             </select>
                         </div>
 
@@ -142,13 +143,12 @@
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
                                     required>
                                 <option value="">-- Sélectionner l'impact --</option>
-                                <option value="minimal" {{ old('impact_level') == 'minimal' ? 'selected' : '' }}>🟢 Minimal</option>
-                                <option value="minor" {{ old('impact_level') == 'minor' ? 'selected' : '' }}>🟡 Mineur</option>
-                                <option value="major" {{ old('impact_level') == 'major' ? 'selected' : '' }}>🟠 Majeur</option>
-                                <option value="critical" {{ old('impact_level') == 'critical' ? 'selected' : '' }}>🔴 Critique</option>
+                                <option value="minimal" {{ old('impact_level', $incident->impact_level) == 'minimal' ? 'selected' : '' }}>🟢 Minimal</option>
+                                <option value="minor" {{ old('impact_level', $incident->impact_level) == 'minor' ? 'selected' : '' }}>🟡 Mineur</option>
+                                <option value="major" {{ old('impact_level', $incident->impact_level) == 'major' ? 'selected' : '' }}>🟠 Majeur</option>
+                                <option value="critical" {{ old('impact_level', $incident->impact_level) == 'critical' ? 'selected' : '' }}>🔴 Critique</option>
                             </select>
                         </div>
-
 
                         <!-- Serveur concerné -->
                         <div>
@@ -161,7 +161,7 @@
                                     required>
                                 <option value="">-- Sélectionner un serveur --</option>
                                 @foreach($servers as $server)
-                                    <option value="{{ $server->id }}" {{ old('server_id') == $server->id ? 'selected' : '' }}>
+                                    <option value="{{ $server->id }}" {{ old('server_id', $incident->server_id) == $server->id ? 'selected' : '' }}>
                                         {{ $server->name }} ({{ $server->ip_address }})
                                     </option>
                                 @endforeach
@@ -178,25 +178,37 @@
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                                 <option value="">-- Assigner à un utilisateur (optionnel) --</option>
                                 @foreach($users as $user)
-                                    <option value="{{ $user->id }}" {{ old('assigned_to') == $user->id ? 'selected' : '' }}>
+                                    <option value="{{ $user->id }}" {{ old('assigned_to', $incident->assigned_to) == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }} ({{ $user->role ?? 'Utilisateur' }})
                                     </option>
                                 @endforeach
                             </select>
                         </div>
 
+                        <!-- Notes de résolution -->
+                        <div>
+                            <label for="resolution_notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Notes de Résolution
+                            </label>
+                            <textarea name="resolution_notes" 
+                                      id="resolution_notes" 
+                                      rows="3"
+                                      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white" 
+                                      placeholder="Notes sur la résolution de l'incident...">{{ old('resolution_notes', $incident->resolution_notes) }}</textarea>
+                        </div>
+
                         <!-- Boutons d'action -->
                         <div class="flex items-center justify-between pt-4">
-                            <a href="{{ route('incidents.index') }}" 
+                            <a href="{{ route('incidents.show', $incident) }}" 
                                class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition duration-200">
                                 Annuler
                             </a>
                             <button type="submit" 
-                                    class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition duration-200 flex items-center">
+                                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200 flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Créer l'Incident
+                                Mettre à Jour
                             </button>
                         </div>
                     </form>

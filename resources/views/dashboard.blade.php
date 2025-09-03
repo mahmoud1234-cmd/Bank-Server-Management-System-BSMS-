@@ -11,7 +11,7 @@
                 <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>
         </div>
-    </x-slot>
+    
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -487,7 +487,7 @@
             <p class="text-purple-100 text-sm">Analyse et regroupement</p>
         </div>
     </div>
-</a>
+</a>    
 
 
     @push('scripts')
@@ -517,4 +517,5 @@
         });
     </script>
     @endpush
+    </x-slot>
 </x-app-layout>

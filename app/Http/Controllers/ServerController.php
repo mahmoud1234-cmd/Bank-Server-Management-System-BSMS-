@@ -67,11 +67,47 @@ class ServerController extends Controller
         return view('servers.create', compact('datacenters', 'users'));
     }
 
+    public function addToSite()
+    {
+        return view('servers.add-to-site');
+    }
+
+    public function storeToSite(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:servers',
+            'ip_address' => 'required|ip|unique:servers',
+            'password' => 'required|string|min:6',
+        ]);
+
+        // Valeurs par défaut pour l'ajout rapide
+        $serverData = array_merge($validated, [
+            'operating_system' => 'Linux',
+            'role' => 'Serveur Web',
+            'location' => 'Site Principal',
+            'owner' => auth()->user()->name,
+            'status' => 'Actif',
+            'environment' => 'production',
+            'critical_level' => 'medium',
+            'notes' => 'Serveur ajouté via formulaire rapide',
+            'password' => bcrypt($validated['password']) // Chiffrer le mot de passe
+        ]);
+
+        $server = Server::create($serverData);
+
+        // Log de la création
+        AuditService::logServerCreated($server);
+
+        return redirect()->route('servers.index')
+            ->with('success', "Serveur {$server->name} ajouté au site avec succès !");
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:servers',
             'ip_address' => 'required|ip|unique:servers',
+            'password' => 'nullable|string|min:6',
             'operating_system' => 'required|string|max:255',
             'role' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -85,6 +121,11 @@ class ServerController extends Controller
             'assigned_users' => 'nullable|array',
             'assigned_users.*' => 'exists:users,id'
         ]);
+
+        // Chiffrer le mot de passe s'il est fourni
+        if (isset($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        }
 
         $server = Server::create($validated);
 
