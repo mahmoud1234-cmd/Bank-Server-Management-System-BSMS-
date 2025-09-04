@@ -43,6 +43,15 @@ Route::middleware('auth')->group(function () {
     // Servers - routes spécifiques avant resource
     Route::get('/servers/add-to-site', [ServerController::class, 'addToSite'])->name('servers.add-to-site');
     Route::post('/servers/store-to-site', [ServerController::class, 'storeToSite'])->name('servers.store-to-site');
+    
+    // Server management routes
+    Route::post('/servers/{server}/test-connection', [ServerController::class, 'testConnection'])->name('servers.test-connection');
+    Route::get('/servers/{server}/connect', [ServerController::class, 'connect'])->name('servers.connect');
+    Route::post('/servers/{server}/pause', [ServerController::class, 'pause'])->name('servers.pause');
+    Route::post('/servers/{server}/resume', [ServerController::class, 'resume'])->name('servers.resume');
+    Route::get('/servers/{server}/content', [ServerController::class, 'getContent'])->name('servers.content');
+    Route::delete('/servers/{server}/force-destroy', [ServerController::class, 'forceDestroy'])->name('servers.force-destroy');
+    
     Route::resource('servers', ServerController::class);
 
     // Datacenters

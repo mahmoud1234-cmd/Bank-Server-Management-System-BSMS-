@@ -107,7 +107,7 @@ class ServerController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:servers',
             'ip_address' => 'required|ip|unique:servers',
-            'password' => 'nullable|string|min:6',
+            'password' => 'required|string|min:6',
             'operating_system' => 'required|string|max:255',
             'role' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -119,7 +119,10 @@ class ServerController extends Controller
             'critical_level' => 'required|in:low,medium,high,critical',
             'notes' => 'nullable|string',
             'assigned_users' => 'nullable|array',
-            'assigned_users.*' => 'exists:users,id'
+            'assigned_users.*' => 'exists:users,id',
+            'cpu' => 'nullable|integer|min:1|max:128',
+            'ram' => 'required|integer|min:1|max:1024',
+            'storage' => 'required|integer|min:1|max:10240'
         ]);
 
         // Chiffrer le mot de passe s'il est fourni
@@ -334,5 +337,134 @@ class ServerController extends Controller
     {
         // Implémentation de l'export PDF (nécessite un package comme DomPDF)
         return response()->json(['message' => 'Export PDF non implémenté']);
+    }
+
+    /**
+     * Test connection to server
+     */
+    public function testConnection(Server $server)
+    {
+        $canConnect = $server->testConnection();
+        $canManage = $server->canManage();
+
+        AuditService::log('action', "Test de connexion au serveur: {$server->name}", $server, null, null, 'server_management', 'medium');
+
+        return response()->json([
+            'success' => true,
+            'can_connect' => $canConnect,
+            'can_manage' => $canManage,
+            'message' => $canConnect ? 'Serveur accessible' : 'Serveur non accessible'
+        ]);
+    }
+
+    /**
+     * Connect to server and show management options
+     */
+    public function connect(Server $server)
+    {
+        if (!$server->canManage()) {
+            return redirect()->back()->with('error', 'Impossible de se connecter au serveur. Vérifiez l\'adresse IP et le mot de passe.');
+        }
+
+        AuditService::log('action', "Connexion au serveur: {$server->name}", $server, null, null, 'server_management', 'medium');
+
+        return view('servers.manage', compact('server'));
+    }
+
+    /**
+     * Pause server (set to maintenance mode)
+     */
+    public function pause(Server $server)
+    {
+        if (!$server->canManage()) {
+            return response()->json(['success' => false, 'message' => 'Connexion au serveur impossible']);
+        }
+
+        $success = $server->pause();
+        
+        if ($success) {
+            AuditService::log('action', "Serveur mis en pause: {$server->name}", $server, null, null, 'server_management', 'high');
+            return response()->json(['success' => true, 'message' => 'Serveur mis en pause avec succès']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Erreur lors de la mise en pause']);
+    }
+
+    /**
+     * Resume server (set to active mode)
+     */
+    public function resume(Server $server)
+    {
+        if (!$server->canManage()) {
+            return response()->json(['success' => false, 'message' => 'Connexion au serveur impossible']);
+        }
+
+        $success = $server->resume();
+        
+        if ($success) {
+            AuditService::log('action', "Serveur repris: {$server->name}", $server, null, null, 'server_management', 'high');
+            return response()->json(['success' => true, 'message' => 'Serveur repris avec succès']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Erreur lors de la reprise']);
+    }
+
+    /**
+     * Get server content/information
+     */
+    public function getContent(Server $server)
+    {
+        if (!$server->canManage()) {
+            return response()->json(['success' => false, 'message' => 'Connexion au serveur impossible']);
+        }
+
+        // Simulate getting server content
+        $content = [
+            'system_info' => [
+                'hostname' => $server->hostname ?? $server->name,
+                'os' => $server->operating_system,
+                'ip' => $server->ip_address,
+                'status' => $server->status
+            ],
+            'resources' => [
+                'cpu_cores' => $server->cpu ?? 'N/A',
+                'ram_gb' => $server->ram ?? 'N/A',
+                'storage_gb' => $server->storage ?? 'N/A'
+            ],
+            'services' => [
+                'running_services' => ['Apache', 'MySQL', 'SSH'],
+                'stopped_services' => ['FTP']
+            ],
+            'disk_usage' => [
+                'total' => $server->storage ?? 100,
+                'used' => rand(30, 80),
+                'free' => null
+            ]
+        ];
+
+        $content['disk_usage']['free'] = $content['disk_usage']['total'] - $content['disk_usage']['used'];
+
+        AuditService::log('access', "Consultation du contenu du serveur: {$server->name}", $server, null, null, 'data_access', 'medium');
+
+        return response()->json(['success' => true, 'content' => $content]);
+    }
+
+    /**
+     * Force delete server (only if connected)
+     */
+    public function forceDestroy(Server $server)
+    {
+        if (!$server->canManage()) {
+            return response()->json(['success' => false, 'message' => 'Connexion au serveur requise pour la suppression']);
+        }
+
+        $serverName = $server->name;
+        
+        // Log before deletion
+        AuditService::log('action', "Suppression forcée du serveur: {$serverName}", $server, null, null, 'server_management', 'critical');
+        
+        $server->delete();
+
+        return response()->json(['success' => true, 'message' => "Serveur {$serverName} supprimé avec succès"]);
     }
 }

@@ -27,9 +27,10 @@ class Server extends Model
         'critical_level',
         'notes',
         'cluster_id',
-        'hostname'
-
-
+        'hostname',
+        'cpu',
+        'ram',
+        'storage'
     ];
 
     protected $casts = [
@@ -133,6 +134,62 @@ class Server extends Model
 
     public function cluster() {
         return $this->belongsTo(Cluster::class);
+    }
+
+    /**
+     * Test connection to server using IP and password
+     */
+    public function testConnection(): bool
+    {
+        // Simple ping test to check if server is reachable
+        $output = [];
+        $returnVar = 0;
+        exec("ping -n 1 -w 1000 {$this->ip_address}", $output, $returnVar);
+        return $returnVar === 0;
+    }
+
+    /**
+     * Check if server can be managed (connected)
+     */
+    public function canManage(): bool
+    {
+        return $this->testConnection() && !empty($this->password);
+    }
+
+    /**
+     * Get server resource usage as formatted string
+     */
+    public function getResourcesFormatted(): string
+    {
+        $cpu = $this->cpu ? $this->cpu . ' cores' : 'N/A';
+        $ram = $this->ram ? $this->ram . ' GB' : 'N/A';
+        $storage = $this->storage ? $this->storage . ' GB' : 'N/A';
+        
+        return "CPU: {$cpu}, RAM: {$ram}, Storage: {$storage}";
+    }
+
+    /**
+     * Pause server (set status to maintenance)
+     */
+    public function pause(): bool
+    {
+        if ($this->canManage()) {
+            $this->status = 'Maintenance';
+            return $this->save();
+        }
+        return false;
+    }
+
+    /**
+     * Resume server (set status to active)
+     */
+    public function resume(): bool
+    {
+        if ($this->canManage()) {
+            $this->status = 'Actif';
+            return $this->save();
+        }
+        return false;
     }
 }
 

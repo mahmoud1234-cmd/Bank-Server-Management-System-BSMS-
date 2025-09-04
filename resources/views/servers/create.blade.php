@@ -111,6 +111,66 @@
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Mot de passe de connexion <span class="text-red-500">*</span>
+                        </label>
+                        <input type="password" name="password" id="password" value="{{ old('password') }}" required
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 @error('password') border-red-500 @enderror"
+                               placeholder="Mot de passe pour la connexion au serveur">
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Spécifications matérielles -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                        </svg>
+                        Spécifications Matérielles
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label for="cpu" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                CPU (Cœurs)
+                            </label>
+                            <input type="number" name="cpu" id="cpu" value="{{ old('cpu') }}" min="1" max="128"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 @error('cpu') border-red-500 @enderror"
+                                   placeholder="ex: 4">
+                            @error('cpu')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="ram" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                RAM (GB) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="ram" id="ram" value="{{ old('ram') }}" min="1" max="1024" required
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 @error('ram') border-red-500 @enderror"
+                                   placeholder="ex: 16">
+                            @error('ram')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="storage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Stockage (GB) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="storage" id="storage" value="{{ old('storage') }}" min="1" max="10240" required
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 @error('storage') border-red-500 @enderror"
+                                   placeholder="ex: 500">
+                            @error('storage')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Configuration avancée -->

@@ -6,11 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center">
-                        <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
-                            </svg>
-                        </div>
+                        <img src="{{ asset('logo.png') }}" alt="BSMS Logo" class="w-10 h-10 rounded-lg mr-3 object-contain">
                         <span class="text-xl font-bold text-gray-900 dark:text-gray-100">BSMS</span>
                     </a>
                 </div>
@@ -64,15 +60,32 @@
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
+                <!-- Logout Button -->
+                <form method="POST" action="{{ route('logout') }}" class="mr-4">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-lg font-semibold text-sm text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        Déconnexion
+                    </button>
+                </form>
+                
                 <!-- Settings Dropdown -->
                 <div class="ml-3 relative">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition duration-150 ease-in-out">
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-2">
-                                        <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
-                                    </div>
+                                    @if(Auth::user()->photo)
+                                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" 
+                                             alt="Photo de profil" 
+                                             class="w-8 h-8 rounded-full object-cover border-2 border-green-200 dark:border-green-600 mr-2">
+                                    @else
+                                        <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-2 border-2 border-green-200 dark:border-green-600">
+                                            <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                        </div>
+                                    @endif
                                     <div>{{ Auth::user()->name }}</div>
                                     <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -169,8 +182,21 @@
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</div>
+                <div class="flex items-center mb-2">
+                    @if(Auth::user()->photo)
+                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" 
+                             alt="Photo de profil" 
+                             class="w-10 h-10 rounded-full object-cover border-2 border-green-200 dark:border-green-600 mr-3">
+                    @else
+                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-3 border-2 border-green-200 dark:border-green-600">
+                            <span class="text-white font-semibold">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                        </div>
+                    @endif
+                    <div>
+                        <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
+                        <div class="font-medium text-sm text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">
