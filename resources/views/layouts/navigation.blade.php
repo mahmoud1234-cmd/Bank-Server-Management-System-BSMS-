@@ -6,8 +6,8 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center">
-                        <img src="{{ asset('logo.png') }}" alt="BSMS Logo" class="w-10 h-10 rounded-lg mr-3 object-contain">
-                        <span class="text-xl font-bold text-gray-900 dark:text-gray-100">BSMS</span>
+                        <img src="{{ asset('logo.png') }}" alt="ATBSMS Logo" class="w-10 h-10 rounded-lg mr-3 object-contain">
+                        <span class="text-xl font-bold text-gray-900 dark:text-gray-100">ATBSMS</span>
                     </a>
                 </div>
 
@@ -20,21 +20,31 @@
                         </svg>
                         Tableau de bord
                     </x-nav-link>
-                    
+
                     <x-nav-link :href="route('servers.index')" :active="request()->routeIs('servers.*')" class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
                         </svg>
                         Serveurs
                     </x-nav-link>
-                    
+
+                    <!-- en cours -->
+
+
+                    <x-nav-link :href="route('applications.index')" :active="request()->routeIs('applications.*')" class="flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                         Applications
+                    </x-nav-link>
+
                     <x-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')" class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                         </svg>
                         Incidents
                     </x-nav-link>
-                    
+
                     <x-nav-link :href="route('maintenance-tasks.index')" :active="request()->routeIs('maintenance-tasks.*')" class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -42,20 +52,22 @@
                         </svg>
                         Maintenances
                     </x-nav-link>
-                    
+
                     <x-nav-link :href="route('datacenters.index')" :active="request()->routeIs('datacenters.*')" class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
                         Datacenters
                     </x-nav-link>
-                    
+
                     <x-nav-link :href="route('clusters.index')" :active="request()->routeIs('clusters.*')" class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
                         Clusters
                     </x-nav-link>
+
+
                 </div>
             </div>
 
@@ -68,8 +80,8 @@
                             <button class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none transition duration-150 ease-in-out">
                                 <div class="flex items-center">
                                     @if(Auth::user()->photo)
-                                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" 
-                                             alt="Photo de profil" 
+                                        <img src="{{ asset('storage/' . Auth::user()->photo) }}"
+                                             alt="Photo de profil"
                                              class="w-8 h-8 rounded-full object-cover border-2 border-green-200 dark:border-green-600 mr-2">
                                     @else
                                         <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-2 border-2 border-green-200 dark:border-green-600">
@@ -101,7 +113,7 @@
                                 @csrf
                                 <x-dropdown-link :href="route('logout')"
                                          onclick="event.preventDefault();
-                                                    this.closest('form').submit();" 
+                                                    this.closest('form').submit();"
                                          class="flex items-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -112,7 +124,7 @@
                         </x-slot>
                     </x-dropdown>
                 </div>
-                
+
                 <!-- Hamburger -->
                 <div class="-mr-2 flex items-center sm:hidden">
                     <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
@@ -136,21 +148,21 @@
                 </svg>
                 Tableau de bord
             </x-responsive-nav-link>
-            
+
             <x-responsive-nav-link :href="route('servers.index')" :active="request()->routeIs('servers.*')" class="flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
                 </svg>
                 Serveurs
             </x-responsive-nav-link>
-            
+
             <x-responsive-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')" class="flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                 </svg>
                 Incidents
             </x-responsive-nav-link>
-            
+
             <x-responsive-nav-link :href="route('maintenance-tasks.index')" :active="request()->routeIs('maintenance-tasks.*')" class="flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -158,14 +170,14 @@
                 </svg>
                 Maintenances
             </x-responsive-nav-link>
-            
+
             <x-responsive-nav-link :href="route('datacenters.index')" :active="request()->routeIs('datacenters.*')" class="flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                 </svg>
                 Datacenters
             </x-responsive-nav-link>
-            
+
             <x-responsive-nav-link :href="route('clusters.index')" :active="request()->routeIs('clusters.*')" class="flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
@@ -179,8 +191,8 @@
             <div class="px-4">
                 <div class="flex items-center">
                     @if(Auth::user()->photo)
-                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" 
-                             alt="Photo de profil" 
+                        <img src="{{ asset('storage/' . Auth::user()->photo) }}"
+                             alt="Photo de profil"
                              class="w-10 h-10 rounded-full object-cover border-2 border-green-200 dark:border-green-600 mr-3">
                     @else
                         <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-3 border-2 border-green-200 dark:border-green-600">
@@ -208,7 +220,7 @@
                     @csrf
                     <x-responsive-nav-link :href="route('logout')"
                                  onclick="event.preventDefault();
-                                            this.closest('form').submit();" 
+                                            this.closest('form').submit();"
                                  class="flex items-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>

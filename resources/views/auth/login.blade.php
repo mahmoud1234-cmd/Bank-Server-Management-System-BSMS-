@@ -23,7 +23,7 @@
         .dark .login-container {
             background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%);
         }
-        
+
         /* Green theme for login consistency with register */
         .btn-green {
             background: linear-gradient(135deg, #16a34a, #15803d);
@@ -36,19 +36,19 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
         }
-        
+
         .input-green:focus {
             border-color: #16a34a !important;
             box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
         }
-        
+
         .text-green {
             color: #16a34a !important;
         }
         .text-green:hover {
             color: #15803d !important;
         }
-        
+
         .checkbox-green:checked {
             background-color: #16a34a !important;
             border-color: #16a34a !important;
@@ -64,14 +64,14 @@
         </video>
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
-    
+
     <div class="min-h-screen relative z-10 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8 animate-fade-in">
             <!-- Logo and Header -->
             <div class="text-center">
-                <img src="{{ asset('logo.png') }}" alt="BSMS Logo" class="mx-auto w-24 h-24 object-contain mb-4">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">BSMS</h2>
-                <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">Bank Server Management System</p>
+                <img src="{{ asset('logo.png') }}" alt="ATBSMS Logo" class="mx-auto w-24 h-24 object-contain mb-4">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">ATBSMS</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">ATB Server Management System</p>
                 <p class="text-sm text-gray-500 dark:text-gray-500">Connectez-vous à votre compte</p>
             </div>
 
@@ -150,7 +150,7 @@
 
             <!-- Footer -->
             <div class="text-center text-xs text-gray-500 dark:text-gray-400">
-                <p>&copy; {{ date('Y') }} BSMS - Bank Server Management System</p>
+                <p>&copy; {{ date('Y') }} ATBSMS - ATB Server Management System</p>
                 <p>Système de gestion des serveurs bancaires</p>
             </div>
         </div>

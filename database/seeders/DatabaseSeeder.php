@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             AdminUserSeeder::class,
             DatacenterSeeder::class,
+            ATBDatacentersSeeder::class,
+            ATBServersSeeder::class,
             ServerSeeder::class,
             IncidentSeeder::class,
             MaintenanceTaskSeeder::class,

@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Applications;
 
 // Contrôleurs
 use App\Http\Controllers\ProfileController;
@@ -14,8 +13,8 @@ use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\MaintenanceTaskController;
-use App\Http\Controllers\Auth\PasswordResetController;
 
+use App\Http\Controllers\ApplicationController;
 // -----------------------------
 // ROUTES PUBLIQUES
 // -----------------------------
@@ -27,54 +26,12 @@ Route::get('/', function () {
 // Les routes d'authentification sont gérées par auth.php (Laravel Breeze)
 
 // -----------------------------
-// ROUTES DE RÉCUPÉRATION DE MOT DE PASSE
-// -----------------------------
-Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
-Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
-
-// -----------------------------
 // ROUTES AUTHENTIFIÉES
 // -----------------------------
 Route::middleware('auth')->group(function () {
 
-    // Dashboard - accessible à tous les utilisateurs authentifiés
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Routes accessibles uniquement par l'admin et le manager
-    Route::middleware(['role:admin,manager'])->group(function () {
-        // Gestion des datacenters
-        Route::resource('datacenters', DatacenterController::class);
-        
-        // Gestion des clusters
-        Route::resource('clusters', ClusterController::class);
-        
-        // Gestion des utilisateurs
-        Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
-        Route::delete('/users/{user}', [ProfileController::class, 'destroy'])->name('users.destroy');
-        
-        // Rapports
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
-    });
-    
-    // Routes accessibles par l'admin, le manager et le technicien
-    Route::middleware(['role:admin,manager,technician'])->group(function () {
-        // Gestion des serveurs
-        Route::resource('servers', ServerController::class);
-        
-        // Gestion des incidents
-        Route::resource('incidents', IncidentController::class);
-        
-        // Gestion des maintenances
-        Route::resource('maintenance-tasks', MaintenanceTaskController::class);
-    });
-    
-    // Profil utilisateur - accessible à tous les utilisateurs authentifiés
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Profile
     Route::prefix('profile')->group(function () {
@@ -96,10 +53,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/servers/{server}', [ServerController::class, 'update'])->name('servers.update');
         Route::delete('/servers/{server}', [ServerController::class, 'destroy'])->name('servers.destroy');
         Route::delete('/servers/{server}/force-destroy', [ServerController::class, 'forceDestroy'])->name('servers.force-destroy');
-        
+
         // Gestion des datacenters (accès complet)
         Route::resource('datacenters', DatacenterController::class);
-        
+
         // Gestion des clusters (accès complet)
         Route::resource('clusters', ClusterController::class);
     });
@@ -110,7 +67,7 @@ Route::middleware('auth')->group(function () {
     // Consultation des serveurs (lecture seule pour non-admins)
     Route::get('/servers', [ServerController::class, 'index'])->name('servers.index');
     Route::get('/servers/{server}', [ServerController::class, 'show'])->name('servers.show');
-    
+
     // Actions techniques sur les serveurs (disponibles pour tous)
     Route::post('/servers/{server}/test-connection', [ServerController::class, 'testConnection'])->name('servers.test-connection');
     Route::get('/servers/{server}/connect', [ServerController::class, 'connect'])->name('servers.connect');
@@ -121,45 +78,63 @@ Route::middleware('auth')->group(function () {
     // Tâches de maintenance (tous peuvent créer et voir)
     Route::resource('maintenance-tasks', MaintenanceTaskController::class);
 
-    // Incidents (tous peuvent créer et voir)
+    // Gestion des applications (création, modification, suppression) - Admin uniquement
+    Route::middleware('admin')->group(function () {
+        Route::get('/applications/create', [ApplicationController::class, 'create'])->name('applications.create');
+        Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
+        Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
+        Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
+        Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
+    });
+
+    // Consultation des applications (lecture seule pour non-admins)
+    Route::get('/applications', [ApplicationController::class, 'index'])->name('applications.index');
+    Route::get('/applications/{application}', [ApplicationController::class, 'show'])->whereNumber('application')->name('applications.show');
+
+    // Incidents (tous les utilisateurs authentifiés peuvent créer et voir)
     Route::resource('incidents', IncidentController::class);
 
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    
+
     // Routes de test pour diagnostic
     Route::get('/test/incident-form', function() {
         $servers = App\Models\Server::all();
         $users = App\Models\User::all();
-        
+
         if ($servers->isEmpty()) {
             return redirect('/dashboard')->with('error', 'Aucun serveur trouvé. Veuillez créer des serveurs d\'abord.');
         }
-        
+
         return view('incidents.create', compact('servers', 'users'));
     })->name('test.incident.form');
-    
+
     Route::get('/test/cluster-form', function() {
         $availableServers = App\Models\Server::whereNull('cluster_id')->get();
-        
+
         if ($availableServers->isEmpty()) {
             return redirect('/dashboard')->with('error', 'Aucun serveur disponible pour créer un cluster. Tous les serveurs sont déjà assignés.');
         }
-        
+
         return view('clusters.create', compact('availableServers'));
     })->name('test.cluster.form');
-    
+
     Route::get('/test/maintenance-form', function() {
         $servers = App\Models\Server::all();
         $users = App\Models\User::all();
-        
+
         if ($servers->isEmpty()) {
             return redirect('/dashboard')->with('error', 'Aucun serveur trouvé. Veuillez créer des serveurs d\'abord.');
         }
-        
+
         return view('maintenance-tasks.create', compact('servers', 'users'));
     })->name('test.maintenance.form');
 });
+
+// Route de test pour le débogage
+Route::get('/test-application-route', [\App\Http\Controllers\TestController::class, 'testApplicationRoute'])
+    ->middleware(['auth', 'admin'])
+    ->name('test.application.route');
 
 // Inclut les routes d'auth supplémentaires si présentes
 require __DIR__.'/auth.php';

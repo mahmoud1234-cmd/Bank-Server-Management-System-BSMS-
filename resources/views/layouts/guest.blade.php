@@ -18,9 +18,9 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
             <div>
                 <a href="/" class="flex flex-col items-center">
-                    <img src="{{ asset('logo.png') }}" alt="BSMS Logo" class="w-20 h-20 object-contain mb-2">
-                    <span class="text-2xl font-bold text-gray-700 dark:text-gray-300">BSMS</span>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Bank Server Management System</span>
+                    <img src="{{ asset('logo.png') }}" alt="ATBSMS Logo" class="w-20 h-20 object-contain mb-2">
+                    <span class="text-2xl font-bold text-gray-700 dark:text-gray-300">ATBSMS</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">ATB Server Management System</span>
                 </a>
             </div>
 

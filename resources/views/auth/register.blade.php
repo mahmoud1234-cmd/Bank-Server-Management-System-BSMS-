@@ -13,18 +13,19 @@
     <!-- Video Background -->
     <div class="fixed inset-0 overflow-hidden z-0">
         <video autoplay muted loop id="loginVideo" class="absolute inset-0 w-full h-full object-cover">
+            <!-- path ou se trouve le video dans public -->
             <source src="{{ asset('3621624925-preview.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
-    
+
     <div class="min-h-screen relative z-10 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
             <!-- Logo and Header -->
             <div class="text-center">
                 <img src="{{ asset('logo.png') }}" alt="BSMS Logo" class="mx-auto w-24 h-24 object-contain mb-4">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">BSMS</h2>
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">ATBMS</h2>
                 <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">Bank Server Management System</p>
                 <p class="text-sm text-gray-500 dark:text-gray-500">Créer votre compte</p>
             </div>
@@ -95,9 +96,18 @@
                             </svg>
                             Département
                         </label>
-                        <input id="department" type="text" name="department" value="{{ old('department') }}" required
-                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-gray-100 transition-colors duration-200 @error('department') border-red-500 @enderror"
-                               placeholder="ex: IT, Sécurité, Infrastructure">
+                        <select id="department" name="department" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-gray-100 transition-colors duration-200 @error('department') border-red-500 @enderror">
+                            <option value="">Sélectionner un département</option>
+                            <option value="IT" {{ old('department') === 'IT' ? 'selected' : '' }}>IT - Technologies de l'information</option>
+                            <option value="Sécurité" {{ old('department') === 'Sécurité' ? 'selected' : '' }}>Sécurité informatique</option>
+                            <option value="Infrastructure" {{ old('department') === 'Infrastructure' ? 'selected' : '' }}>Infrastructure</option>
+                            <option value="Réseau" {{ old('department') === 'Réseau' ? 'selected' : '' }}>Réseau et télécommunications</option>
+                            <option value="Développement" {{ old('department') === 'Développement' ? 'selected' : '' }}>Développement</option>
+                            <option value="Support" {{ old('department') === 'Support' ? 'selected' : '' }}>Support technique</option>
+                            <option value="Systèmes" {{ old('department') === 'Systèmes' ? 'selected' : '' }}>Systèmes d'information</option>
+                            <option value="Autre" {{ old('department') === 'Autre' ? 'selected' : '' }}>Autre</option>
+                        </select>
                         @error('department')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
@@ -157,7 +167,7 @@
 
             <!-- Footer -->
             <div class="text-center text-xs text-gray-500 dark:text-gray-400">
-                <p>&copy; {{ date('Y') }} BSMS - Bank Server Management System</p>
+                <p>&copy; {{ date('Y') }} ATBMS - ATB Server Management System</p>
                 <p>Système de gestion des serveurs bancaires</p>
             </div>
         </div>

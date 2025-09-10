@@ -76,12 +76,17 @@ class DatacenterController extends Controller
             'city' => 'required|string|max:100',
             'country' => 'required|string|max:100',
             'capacity' => 'required|integer|min:1',
-            'status' => 'required|in:active,maintenance,inactive',
-            'manager' => 'required|string|max:255',
-            'contact_phone' => 'required|string|max:20',
-            'contact_email' => 'required|email|max:255',
-            'security_level' => 'required|in:1,2,3,4',
+            // Aligné sur la migration: enum(['operational','maintenance','offline'])
+            'status' => 'required|in:operational,maintenance,offline',
+            // Champs de contact optionnels (le formulaire ne les force pas)
+            'manager' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'nullable|email|max:255',
+            // Aligné sur la migration: enum(['low','medium','high','critical'])
+            'security_level' => 'required|in:low,medium,high,critical',
             'description' => 'nullable|string|max:1000',
+            // Optionnel, présent dans le formulaire avec valeurs suggérées
+            'timezone' => 'nullable|string|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -148,12 +153,13 @@ class DatacenterController extends Controller
             'city' => 'required|string|max:100',
             'country' => 'required|string|max:100',
             'capacity' => 'required|integer|min:1',
-            'status' => 'required|in:active,maintenance,inactive',
-            'manager' => 'required|string|max:255',
-            'contact_phone' => 'required|string|max:20',
-            'contact_email' => 'required|email|max:255',
-            'security_level' => 'required|in:1,2,3,4',
+            'status' => 'required|in:operational,maintenance,offline',
+            'manager' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'nullable|email|max:255',
+            'security_level' => 'required|in:low,medium,high,critical',
             'description' => 'nullable|string|max:1000',
+            'timezone' => 'nullable|string|max:100',
         ]);
 
         if ($validator->fails()) {
